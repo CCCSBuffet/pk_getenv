@@ -20,6 +20,8 @@ using namespace std;
 
 fstream FlexibleOpen(string path, ios::openmode mode, string envval) {
 	fstream file;
+	string slash = "/";
+
 	// Check for local open.
 	file.open(path, mode);
 	if (!file.is_open()) {
@@ -27,8 +29,7 @@ fstream FlexibleOpen(string path, ios::openmode mode, string envval) {
 			specific code. On Mac, this can  be done using the oldest form of getenv.
 			On Windows, getenv is deprecated.
 		*/
-		const char* envvar = nullptr;
-		string s;
+		string envvar;
 #if defined(_WIN64) || defined(WIN32)
 		/*	On Windows, the safer getenv_s is used. It follows the "call me twice"
 			pattern. The first time, call with a null destination buffer and only
@@ -36,22 +37,22 @@ fstream FlexibleOpen(string path, ios::openmode mode, string envval) {
 			get the value.
 		*/
 		size_t space_needed;
+		slash = "\\";
 		getenv_s(&space_needed, nullptr, 0, envval.c_str());
 		if (space_needed > 0) {
-			s.resize(space_needed);
-			getenv_s(&space_needed, (char*)s.c_str(), space_needed, envval.c_str());
-			envvar = s.c_str();
+			// Null termination will be done by `string`.
+			envvar.resize(space_needed - 1);
+			getenv_s(&space_needed, (char*) envvar.c_str(), space_needed, envval.c_str());
 		}
 #else
 		envvar = getenv(envval.c_str());
 #endif
-		if (strlen(envvar) > 0) {
-			string p = string(envvar);
-			if (p.at(p.size() - 1) != '/') {
-				p = p + "/";
+		if (!envvar.empty()) {
+			if (envvar.at(envvar.size() - 1) != '/') {
+				envvar = envvar + slash;
 			}
-			p = p + path;
-			file.open(p, mode);
+			envvar = envvar + path;
+			file.open(envvar, mode);
 		}
 	}
 	return file;
