@@ -45,7 +45,7 @@ fstream FlexibleOpen(string path, ios::openmode mode, string envval) {
 			getenv_s(&space_needed, (char*) envvar.c_str(), space_needed, envval.c_str());
 		}
 #else
-		envvar = getenv(envval.c_str());
+		envvar = string(getenv(envval.c_str()));
 #endif
 		if (!envvar.empty()) {
 			if (envvar.at(envvar.size() - 1) != '/') {
