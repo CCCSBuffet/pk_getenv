@@ -86,7 +86,7 @@ Suppose you create a directory in your `Documents` folder called `csc1810_files`
 Then add:
 
 ```text
-export CSC1810=~/Documents/csc1810_files
+export CSC1810=/Users/YOURACCOUNT/Documents/csc1810_files
 ```
 
 to `.zshrc` on newer macs, or to `.bashrc` on Linux.
@@ -98,4 +98,13 @@ Suppose you create a directory in your `Documents` folder called `csc1810_files`
 Use the Windows environment variable editor GUI to define the variable.
 
 See the video [here](badlink).
+
+### xcode idiocy
+
+The whole point of creating this tool was to make it easier to use files in IDE-based projects.
+The geniuses at Apple once again, "think different." xcode actively blocks environronment variables forcing you
+to reenter them yourself inside xcode.
+
+`Edit scheme` choose the `Run / Debug` scheme. Click the `Arguments` tab. Click the plus sign under `Environment Variables` then enter for Name: `CSC1810` and for Value `/Users/YOURACCOUNT/Documents/csc1810_files`.
+
 
